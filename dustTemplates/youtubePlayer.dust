@@ -1,0 +1,14 @@
+<div id="videoWrapper">
+  <div id="alert"></div>
+  <div id="event_tabs">
+    <div id="greetingText">This video is Interactive.</div>
+  </div>
+  
+  <div id="yt_fullscreen">
+    <div id="yt_smiley"></div>
+    <div id="yt_fullscreenicon"></div>
+  </div>
+  <div id="afxEl"></div>
+
+  <div id="video"></div>
+</div>

@@ -1,0 +1,46 @@
+
+<div id="videoWrapper">
+  <video id="video" preload="auto">
+    {#source}
+  	  <source src="{src}" type="{type}">
+    {/source}
+    <object width="100%" height="100%">
+      <embed src="{srcFlash}"></embed>
+    </object>
+  </video>
+
+  <a href="http://www.LookAliveLabs.com" target="_blank" id="alert"></a>
+
+
+  <div id="bottomBar">
+      <div id="playButton" class="controls">
+          <div id="playButtonTriangle" class="pause_play"></div>
+          <div id="pauseButton" class="pause_play"></div>
+      </div>
+
+      <div id="current_time" class="controls">00:00</div>
+
+      <div id="defaultBar" class="playBar">
+         <div id="bufferBar"></div>
+         <div id="progressBar"></div>
+         <div id="boxAtEnd"></div>
+         <div class="clear"></div>
+      </div>
+
+      <div id="duration" class="controls">00:00</div>
+
+      <div id="audioIcon" class="controls"></div>
+
+      <div id="fullscreenButton" class="controls">
+        <div id="antifullscreenicon"></div>
+        <div id="fullscreenicon"></div>
+      </div>
+      <div class="clear"></div>
+  </div>
+
+  <div id="afxEl">
+      <div id="event_tabs">
+        <div id="greetingText">This video is Interactive.</div>
+      </div>
+  </div>
+</div>

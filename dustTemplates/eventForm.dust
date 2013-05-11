@@ -1,0 +1,25 @@
+<div class="event_id">Element {id}</div>
+<img src="img/delete.png" class="event_delete"/>
+<div class="col1">
+	Element name:<br/>
+	Start time:<br/>
+	End time:<br/>
+</div>
+<div class="col2">
+	<input type="text" class="elname" value={name}><br/>
+	<input type="text" class="starttime" value={start}><br/>
+	<input type="text" class="endtime" value={end}><br/>
+</div>
+<div class="col3">
+	link: <input type="text" class="link" value={link}><br/><br/>
+	<div class="left">hover?</div><div id="hover" class="left"></div></br>
+	<input type="text" class="hover_text" value="{hoverText}" readonly><br/>
+	<textarea type="text" class="hover_css" rows="5" readonly>{hoverCss}</textarea>
+</div>
+<div class="clear"></div>
+
+<div id="afx_file_button" class="button green">upload afx data</div>
+<form enctype="multipart/form-data">
+	<input type="file" name="afx_file" id="afx_file" accept=".json"/>
+</form>
+<div id="afx_file_text"></div>

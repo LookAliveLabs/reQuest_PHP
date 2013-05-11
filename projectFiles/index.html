@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<title>reQuest video</title>
+
+		<link rel="stylesheet" href="../../../projectFiles/styles.css" type="text/css" />
+
+		<script type="text/javascript">
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-38083198-1']);
+		  _gaq.push(['_trackPageview']);
+
+		  (function() {
+		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+
+		</script>
+
+		<script src="../../../projectFiles/lib/popcorn.min.js"></script>
+		<script src="../../../projectFiles/lib/jquery.min.js"></script>
+  		<script src="../../../projectFiles/lib/jquery-ui.js"></script>
+  		<script src="../../../projectFiles/lib/raphael-min.js"></script>
+
+  		<script type="text/javascript" src="../../../projectFiles/lib/underscore-min.js"></script>
+		<script type="text/javascript" src="../../../projectFiles/lib/backbone-min.js"></script>
+		<script type="text/javascript" src="../../../projectFiles/lib/dust-core-1.0.0.js"></script>
+		<script type="text/javascript" src="../../../projectFiles/lib/async.js"></script>
+
+		<script type="text/javascript" src="../../../projectFiles/htmlPlayer.js"></script>
+		<script type="text/javascript" src="../../../projectFiles/youtubePlayer.js"></script>
+
+		<script type="text/javascript" src="../../../projectFiles/player_view.js"></script>
+		<script type="text/javascript" src="../../../projectFiles/raphaelElements.js"></script>
+
+
+	</head>
+	<body>
+		<div id="header"></div>
+		<div id="player"></div>
+		<div id="footnote" class="red">Embed on your site.</div>
+		<div id="iframeText"></div>
+
+		<script>
+			App = {};
+			App.elementsCollection = new Elements();
+			$.ajax({type:'GET', 
+				url:'data.json',
+				success: function(data){
+					App.frameDuration = data.frameDuration;
+					App.player = new Player(data);
+				},
+				error:function(err){
+					console.log('err');
+				}})
+
+			
+		</script>
+
+	</body>
+</html>
