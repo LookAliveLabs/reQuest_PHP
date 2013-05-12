@@ -218,6 +218,9 @@ var AddEventForm = Backbone.View.extend({
 		  }
 		  if (self.model.hasChanged('hoverText')) {
 		  	$('.hover_text').val(self.model.get('hoverText'));
+		  	self.mouseoverText.attr({'text': self.model.get('hoverText')});
+		  	self.mouseoverText.initAttrs.text = self.model.get('hoverText');
+		  	self.mouseoverText.fullAttr.text = self.model.get('hoverText');
 		  }
 		  if (self.model.hasChanged('hoverCss')) {
 		  	$('.hover_css').html(self.model.get('hoverCss'));
