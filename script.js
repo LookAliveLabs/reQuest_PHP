@@ -135,7 +135,7 @@ $(document).ready(function(){
 			dataType: "json",
 			data: {myData:JSON.stringify(App.postObj)},
 			success: function(res){
-				res = JSON.parse(res);
+				// res = JSON.parse(res);
 				App.saved = true;
 				// console.log(res);
 				console.log('link: '+ CONF['api_host']+ '/' + res.dirName);
