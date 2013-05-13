@@ -30,7 +30,7 @@ var HtmlPlayer = Backbone.View.extend({
 			this.renderHtml(options.src);
 		}else if(options.type=="youtube"){
 			// render youtube player
-			this.renderYoutube(options.youtube);
+			this.renderYoutube(options.src);
 		}
 			
 	},
@@ -76,7 +76,7 @@ var HtmlPlayer = Backbone.View.extend({
 
 		// append (1) invisible div on top of iframe 
 		//        (2) in and out markers on top of the iframe
-		$(self.el).append('<div id="youtube_cover"></div>\
+		$(self.el).append('<div id="afxEl"></div>\
 							<div id="bottomBar">\
 							    <div id="playButton">\
 							        <div id="playButtonTriangle" class="pause_play"></div>\
@@ -98,38 +98,54 @@ var HtmlPlayer = Backbone.View.extend({
 							    <div id="audioIcon"></div>\
 						    <div class="clear"></div>\
 						</div>');
-		
-		var currentTime = App.popcorn.currentTime();
-		App.popcorn.on('timeupdate', function(e){
-			if(App.popcorn.currentTime() && App.popcorn.currentTime()!= currentTime && App.popcorn.paused()){ // only fire when video is not playing, and time actually did change
-				currentTime = App.popcorn.currentTime();
-				// new keyframes version:
-				var el = $(App.currEvent.formView.dummy);
-				var keyframes = App.currEvent.keyframes;
-				var l = keyframes.time.length-1;
-				var t = roundTime(App.popcorn.currentTime());
-				// if(t<App.currEvent.get('start') || t>App.currEvent.get('end')){
-				// 	el.css('display', 'none');
-				if(keyframes.time.length > 0 && !App.settingLimits){
-					// 1) place dummy el in correct position
-					if(t < keyframes.time[0]){
-						el.css('display', 'none');
-					}else if(t > keyframes.time[l]){
-						el.css('display', 'none');
-					}
-					// else - intrapolate, get time,x,y,w,h values
-					else{
-						var pos = intrapolate(t, keyframes);
-						el.css({display: 'block',
-								left: pos.x+'%',
-								top: pos.y+'%',
-								width: pos.w+'%',
-								height: pos.h+'%'});
+		// Raphael paper container for raphael elements
+        App.paper = new Raphael('afxEl', $('#video_container').width(), $('#video_container').height());
+        
+        // setup raphael custom Attributes for rectangles - centerX and centerY - allows us to define rectangle location using center point, not top left corner. This is the info that comes out of after effects
+        App.paper.customAttributes.centerX = function (num) {
+			var width = this.attr('width');
+			return {x: num - width/2};
+	    };
+	    App.paper.customAttributes.centerY = function (num) {
+			var height = this.attr('height');
+			return {y: num - height/2};
+	    };
 
-					}
-				}
-			}
-		});
+	    // change dimensions - > bottom bar is 24px. Dont want bottom bar to overlap with the video
+		$('#video_container').height(self.height+24);
+		$('#video').height(self.height);
+
+		// var currentTime = App.popcorn.currentTime();
+		// App.popcorn.on('timeupdate', function(e){
+		// 	if(App.popcorn.currentTime() && App.popcorn.currentTime()!= currentTime && App.popcorn.paused()){ // only fire when video is not playing, and time actually did change
+		// 		currentTime = App.popcorn.currentTime();
+		// 		// new keyframes version:
+		// 		var el = $(App.currEvent.formView.dummy);
+		// 		var keyframes = App.currEvent.keyframes;
+		// 		var l = keyframes.time.length-1;
+		// 		var t = roundTime(App.popcorn.currentTime());
+		// 		// if(t<App.currEvent.get('start') || t>App.currEvent.get('end')){
+		// 		// 	el.css('display', 'none');
+		// 		if(keyframes.time.length > 0 && !App.settingLimits){
+		// 			// 1) place dummy el in correct position
+		// 			if(t < keyframes.time[0]){
+		// 				el.css('display', 'none');
+		// 			}else if(t > keyframes.time[l]){
+		// 				el.css('display', 'none');
+		// 			}
+		// 			// else - intrapolate, get time,x,y,w,h values
+		// 			else{
+		// 				var pos = intrapolate(t, keyframes);
+		// 				el.css({display: 'block',
+		// 						left: pos.x+'%',
+		// 						top: pos.y+'%',
+		// 						width: pos.w+'%',
+		// 						height: pos.h+'%'});
+
+		// 			}
+		// 		}
+		// 	}
+		// });
 
 		self.setup();
 
@@ -248,7 +264,13 @@ var HtmlPlayer = Backbone.View.extend({
 		/*
 			Listen to 'seeking' event and update start and end times based on seeked location
 		*/
-		App.popcorn.on('seeking', function(e){
+		// App.popcorn.on('seeking', function(e){
+		// 	if(App.currFocus){
+
+		// 		self.animate();
+		// 	}
+		// });
+		App.popcorn.on('seeked', function(e){
 			if(App.currFocus){
 
 				self.animate();

@@ -329,7 +329,7 @@ $(document).ready(function(){
 				// get youtube id from link url
 				var regexp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i;
 				var yt_id = link.match(regexp)[1];
-				link = "www.youtube.com/v/"+yt_id+"?fs=0&rel=0";
+				link = "www.youtube.com/v/"+yt_id+"?fs=0&rel=0&autohide=0";
 				
 				App.postObj.videoType = 'youtube';
 				App.postObj.videoLink = link;
@@ -399,7 +399,7 @@ $(document).ready(function(){
 						App.player = new HtmlPlayer({type:"file", src: CONF['api_host'] +"/Projects/"+ App.postObj.dirName + "/"+App.postObj.source[0].src});
 					}else if(App.postObj.videoType == 'youtube'){
 						// App.player = new HtmlPlayer({src_youtube: App.postObj.videoLink+"&controls=0"});
-						App.player = new HtmlPlayer({type:youtube, src: App.postObj.videoLink+"&controls=0"});
+						App.player = new HtmlPlayer({type:'youtube', src: App.postObj.videoLink+"&controls=0"});
 					}else if(App.postObj.videoType == 'link'){
 						// App.player = new HtmlPlayer({src_mp4: App.postObj.videoLink});
 						App.player = new HtmlPlayer({type: "link", src: App.postObj.source[0].src});

@@ -36,7 +36,7 @@ var Player = Backbone.View.extend({
 		App.clientName = this.options.dirName.split('/')[0];
 		App.projectName = this.options.dirName.split('/')[1];
 
-		if(this.options.videoType=="file" || this.options.videoType=="link_mp4"){
+		if(this.options.videoType=="file" || this.options.videoType=="link"){
 			this.renderHtml();
 		}else{
 			this.renderYoutube();
@@ -107,6 +107,7 @@ var Player = Backbone.View.extend({
 	},
 	renderYoutube: function(){
 		var self = this;
+		this.youtube = true;
 		dust.render("youtubePlayer", this.options, function(err, out) {
             if(!err) {
                 $(self.el).html(out);
@@ -120,32 +121,32 @@ var Player = Backbone.View.extend({
 
 			    var fullscreen = Raphael(fullscreenSVG);
 			    var smiley = Raphael(smileySVG);
-			    App.alertRaphael = Raphael(alertSVG);
-			    App.alertRaphael = App.alertRaphael.node;
+			    // App.alertRaphael = Raphael(alertSVG);
+			    // App.alertRaphael = App.alertRaphael.node;
 
                 App.popcorn = Popcorn.youtube('#video', self.options.videoLink);
 
-                var currentTime = App.popcorn.currentTime();
+     //            var currentTime = App.popcorn.currentTime();
+  			// 	App.popcorn.on('timeupdate', function(){
+  			// 		var t = App.popcorn.currentTime();
+					// if(t && t!=currentTime && App.popcorn.paused()){
+  			// 			App.popcorn.currentTime(App.popcorn.currentTime()); // trigger seek event
+  			// 		}
+  			// 	});
+
+  				var currentTime = App.popcorn.currentTime();
 				App.popcorn.on('timeupdate', function(){	
 					var t = App.popcorn.currentTime();
 					if(t && t!=currentTime && App.popcorn.paused()){
 						App.LooksAlive = 0;
-						async.map(self.elements, function(evt, callback){
-								self.animate(evt.name, evt.keyframes);
-								if(t>=evt.start && t<=evt.end){
-									App.LooksAlive+=1; 
-								}
-								callback(null);
-						}, function(err){
-							currentTime = t;
-							// if(App.LooksAlive){
-							// 	$('#alert').fadeIn();
-							// }else{
-							// 	$('#alert').fadeOut();
-							// }
-						});	
+						// async.map(self.elements, function(evt, callback){
+						App.elementsCollection.each(function(element){
+							element.view.animate();
+						});
+						currentTime = t;
 					}
 				});
+				$('#afxEl').height($('#player').height()-35);
 
                 self.setup();
             } else {
@@ -157,7 +158,7 @@ var Player = Backbone.View.extend({
 		var self = this;
 
 	    App.LooksAlive = 0; // alert indicator
-	    App.paper = new Raphael('afxEl', $('#player').width(), $('#player').height()); // Paper for raphael elements
+	    App.paper = new Raphael('afxEl', $('#player').width(), this.youtube ? $('#player').height()-35 : $('#player').height()); // Paper for raphael elements
 	    App.paper.canvas.className.baseVal="raphaelPaper"; // give this el a class
 
 	    // setup raphael custom Attributes for rectangles - centerX and centerY - allows us to define rectangle location using center point, not top left corner. This is the info that comes out of after effects
@@ -245,13 +246,15 @@ var Player = Backbone.View.extend({
 	    });
 
         // bind timeupdate
-	    App.popcorn.on("timeupdate", function(){
-	    	// update current time display
-	    	$("#current_time").html(self.formatTime(App.popcorn.currentTime()));
-	    	// update progress bar
-        	$('#boxAtEnd').css('left', 100*App.popcorn.currentTime()/App.popcorn.duration()+'%'); // box plaement in percentages - so that it works in full screen mode
+        if(!self.youtube){
+		    App.popcorn.on("timeupdate", function(){
+		    	// update current time display
+		    	$("#current_time").html(self.formatTime(App.popcorn.currentTime()));
+		    	// update progress bar
+	        	$('#boxAtEnd').css('left', 100*App.popcorn.currentTime()/App.popcorn.duration()+'%'); // box plaement in percentages - so that it works in full screen mode
 
-	    });
+		    });
+		}	
 
 		App.popcorn.on('canplaythrough', function(e){
 			e.preventDefault(); e.stopPropagation();
@@ -405,6 +408,10 @@ var Player = Backbone.View.extend({
 				});
 				App.paper.setSize(App.playerwidth, App.playerheight);
 		    }
+		    if(self.youtube){
+		    	$('#afxEl').height($('#player').height()-35);
+		    	App.paper.setSize(App.playerwidth, App.playerheight-35);
+		    }
 
 		}, false);
 
@@ -425,7 +432,7 @@ var Player = Backbone.View.extend({
 		}
 		if(ok){
 			// run Intro animation the first time video is played - reQuest logo slides in from the left, Text + tabs slide in from the right
-			if(!App.playedOnce){ 
+			if(!App.playedOnce && !this.youtube){ 
 				// playing first time
 				
 				// GoogleAnalytics

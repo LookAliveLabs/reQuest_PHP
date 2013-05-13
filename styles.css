@@ -493,9 +493,12 @@ input.hover_text{
 }
 #afx_file_text{
 	position: absolute;
-	width: 200px;
+	width: 100px;
 	bottom: 10%;
 	left: 140px;
 	font-size: 12px;
 	font-family: OpenSans-Light;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
