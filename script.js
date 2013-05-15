@@ -1,4 +1,81 @@
+// SET COOKIE in browser with expiration time in hours
+function setCookie(c_name,value,exhours){
+	var now = new Date();
+	var time = now.getTime();
+	time += exhours*3600 * 1000;
+	now.setTime(time);
+	
+	var c_value=escape(value) + ((exhours==null) ? "" : "; expires="+now.toGMTString() );
+	document.cookie=c_name + "=" + c_value;
+}
+
+// GET COOKIE
+function getCookie(c_name){
+	var i,x,y,ARRcookies=document.cookie.split(";");
+	for (i=0;i<ARRcookies.length;i++){
+	  x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+	  y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+	  x=x.replace(/^\s+|\s+$/g,"");
+	  if (x==c_name){
+		return unescape(y);
+	  }
+	}
+}
+
 $(document).ready(function(){
+
+	/*
+		CHECK LOGIN
+	*/
+	var auth = getCookie('reQuestV1');
+	if(auth){
+		// check authentication
+		$.ajax({type:'POST', 
+			dataType:'json', 
+			data:{user:auth.split(':')[0], pass:auth.split(':')[1]}, 
+			url:'php/login.php', 
+			success: function(res){
+				if(res.login){
+					// set cookie
+					setCookie('reQuestV1',$('#user').val()+':'+$('#pass').val(), 1);// cookie expires in 1 hour
+					// run the app
+					$('#login-form').css('display', 'none');
+					$('#input_container').css('display', 'block');
+					
+				}
+			},
+			error:function(err){
+				$('#login-form').css('display', 'block');
+			}
+		});
+	}else{
+		$('#login').bind('click', function(){
+			//Authenticate user
+			$.ajax({type:'POST', 
+				dataType:'json', 
+				data:{user:$('#user').val(), pass:$('#pass').val()}, 
+				url:'php/login.php', 
+				success: function(res){
+					if(res.login){
+						// set cookie
+						setCookie('reQuestV1',$('#user').val()+':'+$('#pass').val(), 1);// cookie expires in 1 hour
+						// run the app
+						$('#login-form').fadeOut(300, function(){
+							$('#input_container').fadeIn(300);
+						});
+					}else{
+						$('#user').css('background-color', 'rgb(213, 159, 159)');
+						$('#pass').css('background-color', 'rgb(213, 159, 159)');
+					}
+				},
+				error:function(err){
+					$('#user').css('background-color', 'rgb(213, 159, 159)');
+					$('#pass').css('background-color', 'rgb(213, 159, 159)');
+				}
+			})
+		});
+
+	}
 
 	/* 
 		APP VARIABLES 

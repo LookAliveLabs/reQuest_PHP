@@ -55,6 +55,43 @@ a{text-decoration:none;}
 	margin:auto;
 	padding:0;
 }
+#login-form{
+	position: relative;
+	z-index:100;
+	width: 370px;
+	height: 120px;
+	margin: auto;
+	color:#fff;
+	top: 150px;
+	text-align: center;
+	font-family: Lobster-Italic;
+	border-radius: 10px;
+	padding: 10px;
+	border:2px solid #fff;
+	box-shadow: 3px 3px 5px rgb(61, 60, 60);
+	font-size: 35px;
+	display:block;
+}
+#login-form .prompt{
+	float:left;
+	width:170px;
+	text-align:left;
+}
+#login-form input{
+	width:200px;
+	float: left;
+	font-size: 15px;
+	border-radius: 7px;
+	padding: 5px;
+	margin-top: 8px;
+	border: none;
+	box-shadow: inset 2px 2px 3px gray;
+}
+#login{
+	float:right;
+	width:30%;
+	cursor:pointer;
+}
 
 #error_container{
 	position: absolute;
@@ -146,6 +183,7 @@ a{text-decoration:none;}
 	font-family: Lobster-Italic;
 	font-size:35px;
 	line-height:40px;
+	display:none;
 }
 
 #input_container .prompt{
