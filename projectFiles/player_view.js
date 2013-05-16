@@ -374,6 +374,7 @@ var Player = Backbone.View.extend({
 		var video = document.getElementById('videoWrapper');
 		video.addEventListener("webkitfullscreenchange",function(){
 		    if(document.webkitIsFullScreen){
+		    	App.fullscreen = 1;
 		    	$("#video").css({ height: "100%"});
 		    	var yoffset = (screen.height - (screen.width*9/16))/2;
 		    	// fullscreen all raphael elements
@@ -394,6 +395,7 @@ var Player = Backbone.View.extend({
 				App.paper.setSize(screen.width, screen.height);
 
 		    }else{ // came back from full screen
+		    	App.fullscreen = 0;
 		    	$("#video").css({ height: App.playerheight});
 		    	// resize all raphael elements
 		        App.elementsCollection.each(function(element){
@@ -625,7 +627,7 @@ var ElementView = Backbone.View.extend({
 				// Draw mouseover Raphael element(s)!!!!!! :D
 				var hoverObj = this.model.get('hoverObj');
 				this.mouseoverScaleStr = "S"+App.playerwidth/this.model.get('raphaelWidth')+", "+App.playerheight/this.model.get('raphaelHeight')+", 0, 0"; // scale to fit player
-
+				this.mouseoverScaleFullStr = "S"+screen.width/this.model.get('raphaelWidth')+", "+(screen.width*9/16)/this.model.get('raphaelHeight')+", 0, 0"; // scale to fit player
 
 				// (h1) Create raphael set of hover elements - reverse order to mimic order in After effects
 				this.mouseover = App.paper.set();
@@ -733,12 +735,13 @@ var ElementView = Backbone.View.extend({
 	},
 	animateHover: function(param, el, obj, idx, addTransform, callback){
 		var self = this;
+		var yoffset = (screen.height - (screen.width*9/16))/2;
 		if(idx<obj[param].length){
 			var newattr = {};
 			newattr[param] = obj[param][idx].val;
 			// if transform - add scaling transform
 			if(param == 'transform'){
-				newattr[param] += this.mouseoverScaleStr + addTransform;
+				newattr[param] += (App.fullscreen ? (self.mouseoverScaleFullStr+"T0,"+yoffset) : self.mouseoverScaleStr) + addTransform;
 				newattr['stroke-width'] = el.myStrokeWidth*App.playerwidth/self.model.get('raphaelWidth');
 			}
 			el.animate(newattr, obj[param][idx].t - obj[param][idx-1].t, function(){
@@ -835,9 +838,11 @@ var ElementView = Backbone.View.extend({
 						}else if(self.model.get('hoverObj').static){
 							if(!App.player.paused){App.popcorn.pause();}
 							// reset all elements to original parameters
+							var scale = App.fullscreen ? self.mouseoverScaleFullStr : self.mouseoverScaleStr;
 							self.mouseover.forEach(function(e){
 								e.attr(e.initAttrs);
-								e.attr({'transform': "..."+self.mouseoverScaleStr, 'stroke-width':e.myStrokeWidth*App.playerwidth/self.model.get('raphaelWidth')});
+								// e.attr({'transform': "..."+(App.fullscreen ? self.mouseoverScaleFullStr : self.mouseoverScaleStr), 'stroke-width':e.myStrokeWidth*App.playerwidth/self.model.get('raphaelWidth')});
+								e.attr({'transform': "..."+scale, 'stroke-width':e.myStrokeWidth*App.playerwidth/self.model.get('raphaelWidth')});
 								if(e.initAttrs.type=='text'){
 									$($('tspan', e.node)[0]).attr('dy', 0);
 								}
