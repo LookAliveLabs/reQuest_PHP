@@ -22,6 +22,32 @@ function getCookie(c_name){
 	}
 }
 
+function authenticate(){
+	//Authenticate user
+	$.ajax({type:'POST', 
+		dataType:'json', 
+		data:{user:$('#user').val(), pass:$('#pass').val()}, 
+		url:'php/login.php', 
+		success: function(res){
+			if(res.login){
+				// set cookie
+				setCookie('reQuestV1',$('#user').val()+':'+$('#pass').val(), 1);// cookie expires in 1 hour
+				// run the app
+				$('#login-form').fadeOut(300, function(){
+					$('#input_container').fadeIn(300);
+				});
+			}else{
+				$('#user').css('background-color', 'rgb(213, 159, 159)');
+				$('#pass').css('background-color', 'rgb(213, 159, 159)');
+			}
+		},
+		error:function(err){
+			$('#user').css('background-color', 'rgb(213, 159, 159)');
+			$('#pass').css('background-color', 'rgb(213, 159, 159)');
+		}
+	});
+}
+
 $(document).ready(function(){
 
 	/*
@@ -36,12 +62,38 @@ $(document).ready(function(){
 			url:'php/login.php', 
 			success: function(res){
 				if(res.login){
-					// set cookie
-					setCookie('reQuestV1',$('#user').val()+':'+$('#pass').val(), 1);// cookie expires in 1 hour
 					// run the app
 					$('#login-form').css('display', 'none');
 					$('#input_container').css('display', 'block');
+					$('#footer').css('display', 'block');
 					
+				}else{
+					$('#login').bind('click', function(){
+						//Authenticate user
+						$.ajax({type:'POST', 
+							dataType:'json', 
+							data:{user:$('#user').val(), pass:$('#pass').val()}, 
+							url:'php/login.php', 
+							success: function(res){
+								if(res.login){
+									// set cookie
+									setCookie('reQuestV1',$('#user').val()+':'+$('#pass').val(), 1);// cookie expires in 1 hour
+									// run the app
+									$('#login-form').fadeOut(300, function(){
+										$('#footer').fadeIn(300);
+										$('#input_container').fadeIn(300);
+									});
+								}else{
+									$('#user').css('background-color', 'rgb(213, 159, 159)');
+									$('#pass').css('background-color', 'rgb(213, 159, 159)');
+								}
+							},
+							error:function(err){
+								$('#user').css('background-color', 'rgb(213, 159, 159)');
+								$('#pass').css('background-color', 'rgb(213, 159, 159)');
+							}
+						})
+					});
 				}
 			},
 			error:function(err){
@@ -61,6 +113,7 @@ $(document).ready(function(){
 						setCookie('reQuestV1',$('#user').val()+':'+$('#pass').val(), 1);// cookie expires in 1 hour
 						// run the app
 						$('#login-form').fadeOut(300, function(){
+							$('#footer').fadeIn(300);
 							$('#input_container').fadeIn(300);
 						});
 					}else{

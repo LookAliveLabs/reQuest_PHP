@@ -55,6 +55,18 @@ a{text-decoration:none;}
 	margin:auto;
 	padding:0;
 }
+#footer{
+	position:relative;
+	font-family: OpenSans-Light;
+	font-size:12;
+	width:100%;
+	text-align:center;
+	display:none;
+	cursor:pointer;
+}
+a:active{
+	color:#000;
+}
 #login-form{
 	position: relative;
 	z-index:100;
