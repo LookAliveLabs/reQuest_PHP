@@ -779,8 +779,8 @@ var ElementView = Backbone.View.extend({
 				this.raphael.attr({
 					'stroke': App.colors[(this.model.get('id')-1)%4],
 					'stroke-dasharray': '--',
-					'stroke-width': (this.model.get('opacityAnimation') || parseFloat(init.opacity)) ? 0:4,
-					'fill': init.fill,
+					'stroke-width': (this.model.get('opacityAnimation') || parseFloat(init.opacity) || this.model.get('invisible') ) ? 0:4,
+					'fill': this.model.get('invisible') ? '' : init.fill,
 					'fill-opacity': init.opacity,
 					opacity:0 // set opacity 0 so that can fade the element in/out when mouse hovers in the player area
 				});
@@ -819,6 +819,10 @@ var ElementView = Backbone.View.extend({
 						// record any additional engagement
 						_gaq.push(['_trackEvent', App.clientName+'_'+App.projectName, 'Additional Engagements', 'Engaged with '+self.model.get('name')]);
 					}
+
+					if(self.model.get('hoverObj').pause){
+						if(!App.player.paused){App.popcorn.pause();}
+					}
 					
 					// evt.preventDefault(); evt.stopPropagation();
 					if(self.model.get('hover') && self.model.get('customHover')){ //custom hover el
@@ -836,13 +840,15 @@ var ElementView = Backbone.View.extend({
 								}
 							});
 						}else if(self.model.get('hoverObj').static){
-							if(!App.player.paused){App.popcorn.pause();}
+							if(!App.player.paused && self.model.get('hoverObj').pause){App.popcorn.pause();}
 							// reset all elements to original parameters
 							var scale = App.fullscreen ? self.mouseoverScaleFullStr : self.mouseoverScaleStr;
+							var yTranslate= App.fullscreen ? 'T0,'+(screen.height - (screen.width*9/16))/2 : '';
+
 							self.mouseover.forEach(function(e){
 								e.attr(e.initAttrs);
 								// e.attr({'transform': "..."+(App.fullscreen ? self.mouseoverScaleFullStr : self.mouseoverScaleStr), 'stroke-width':e.myStrokeWidth*App.playerwidth/self.model.get('raphaelWidth')});
-								e.attr({'transform': "..."+scale, 'stroke-width':e.myStrokeWidth*App.playerwidth/self.model.get('raphaelWidth')});
+								e.attr({'transform': "..."+scale+yTranslate, 'stroke-width':e.myStrokeWidth*App.playerwidth/self.model.get('raphaelWidth')});
 								if(e.initAttrs.type=='text'){
 									$($('tspan', e.node)[0]).attr('dy', 0);
 								}
@@ -888,7 +894,7 @@ var ElementView = Backbone.View.extend({
 				}).mouseleave(function(evt){
 					// evt.preventDefault(); evt.stopPropagation();
 					if(self.model.get('hover') && self.model.get('customHover')){
-						if(self.model.get('hoverObj').static){
+						if(self.model.get('hoverObj').static || self.model.get('hoverObj').pause){
 							if(!App.player.paused){App.popcorn.play();}	
 						}
 
@@ -1002,7 +1008,7 @@ var ElementView = Backbone.View.extend({
 					// this.raphael.attr({'opacity':1});
 					this.raphael.animate({  
 					    path: myPath,
-					    'fill-opacity': kf.opacity,
+					    'fill-opacity': this.model.get('invisible') ? '0' :  kf.opacity,
 					    fill: kf.fill
 					}, 1, 'linear', function(){
 					});

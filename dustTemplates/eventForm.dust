@@ -4,15 +4,17 @@
 	Element name:<br/>
 	Start time:<br/>
 	End time:<br/>
+	Invisible?<br/>
 </div>
 <div class="col2">
 	<input type="text" class="elname" value={name}><br/>
 	<input type="text" class="starttime" value={start}><br/>
 	<input type="text" class="endtime" value={end}><br/>
+	<div id="invisible" class="checkbox"></div>
 </div>
 <div class="col3">
 	link: <input type="text" class="link" value={link}><br/><br/>
-	<div class="left">hover?</div><div id="hover" class="left"></div></br>
+	<div class="left">hover?</div><div id="hover" class="left"></div><div class="left">pause?</div><div id="pause" class="left checkbox"></div></br>
 	<input type="text" class="hover_text" value="{hoverText}" readonly><br/>
 	<textarea type="text" class="hover_css" rows="5" readonly>{hoverCss}</textarea>
 </div>

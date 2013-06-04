@@ -59,6 +59,7 @@
 
 		// (2) store all previous data in App.postObj
 		App.postObj = data; 
+		App.frameDuration = data.frameDuration;
 
 		// (3) populate events
 		App.popcorn.on('canplaythrough', function(e){

@@ -63,6 +63,7 @@ a{text-decoration:none;}
 	text-align:center;
 	display:none;
 	cursor:pointer;
+	color:#000;
 }
 a:active{
 	color:#000;
@@ -324,7 +325,7 @@ input.selected{
 }
 .add_event_form{
 	width: 80%;
-	height:190px;
+	height:210px;
 	float:left;
 	padding:10px;
 	background-color:rgb(16,185,1);
@@ -394,6 +395,24 @@ input.selected{
 	background-color: #fff;
 	border-radius: 5px;
 	cursor:pointer;
+	margin-right:20px;
+}
+.checkbox{
+	width: 12px;
+	height: 12px;
+	border: 1px solid black;
+	position: relative;
+	top: 4px;
+	left: 5px;
+	background-color: #fff;
+	border-radius: 5px;
+	cursor:pointer;
+}
+#invisible_chkbox{
+	top:8px;
+}
+#pause_chkbox{
+
 }
 .event_delete{
 	position:absolute;

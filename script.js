@@ -65,7 +65,7 @@ $(document).ready(function(){
 					// run the app
 					$('#login-form').css('display', 'none');
 					$('#input_container').css('display', 'block');
-					$('#footer').css('display', 'block');
+					$('#footer').css({'display': 'block'});
 					
 				}else{
 					$('#login').bind('click', function(){
@@ -80,7 +80,7 @@ $(document).ready(function(){
 									setCookie('reQuestV1',$('#user').val()+':'+$('#pass').val(), 1);// cookie expires in 1 hour
 									// run the app
 									$('#login-form').fadeOut(300, function(){
-										$('#footer').fadeIn(300);
+										$('#footer').fadeIn(300).css('display', 'block');
 										$('#input_container').fadeIn(300);
 									});
 								}else{
@@ -113,7 +113,7 @@ $(document).ready(function(){
 						setCookie('reQuestV1',$('#user').val()+':'+$('#pass').val(), 1);// cookie expires in 1 hour
 						// run the app
 						$('#login-form').fadeOut(300, function(){
-							$('#footer').fadeIn(300);
+							$('#footer').fadeIn(300).css('display', 'block');
 							$('#input_container').fadeIn(300);
 						});
 					}else{

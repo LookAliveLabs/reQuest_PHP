@@ -216,6 +216,12 @@ var AddEventForm = Backbone.View.extend({
 		  if (self.model.hasChanged('hover')) {
 		  	self.toggle_hover();
 		  }
+		  if (self.model.hasChanged('invisible')) {
+		  	self.toggle_invisible();
+		  }
+		  if (self.model.hasChanged('pause')) {
+		  	self.toggle_pause();
+		  }
 		  if (self.model.hasChanged('hoverText')) {
 		  	$('.hover_text').val(self.model.get('hoverText'));
 		  	self.mouseoverText.attr({'text': self.model.get('hoverText')});
@@ -251,19 +257,55 @@ var AddEventForm = Backbone.View.extend({
 		///checkmarkSVG -
 		var checkmarkSVG=["hover",30,30,{"fill":"#FF2D00","type":"path","stroke":"none","path":"M1.125,18.75l7.25-4.625l3.875,7.25c0,0,2.358-5.429,6-10 C24.125,4,28.875,1.75,28.875,1.75v10.875c0,0-5.848,3.854-7.25,5.25C19.173,20.317,12.75,28.5,12.75,28.5S3.75,19.833,1.125,18.75z "}];
 		var checkmark = new Raphael(checkmarkSVG).transform("s0.9,0.9,0,0");
-		this.checkmark = $($('#hover').children()[0]);
-		this.checkmark.css({
+		this.hover_checkmark = $($('#hover').children()[0]);
+		this.hover_checkmark.css({
 			top:'-14px', left:'-4px', 'display':'none'}
 			);
-		$('#hover').click(function(){
-				if(self.model.get('hover')){
-					self.model.set({hover:false});
-				}else{
-					self.model.set({hover:true});
-				}
-			});
+		var checkmarkSVG=["invisible_chkbox",30,30,{"fill":"#FF2D00","type":"path","stroke":"none","path":"M1.125,18.75l7.25-4.625l3.875,7.25c0,0,2.358-5.429,6-10 C24.125,4,28.875,1.75,28.875,1.75v10.875c0,0-5.848,3.854-7.25,5.25C19.173,20.317,12.75,28.5,12.75,28.5S3.75,19.833,1.125,18.75z "}];
+		var checkmark = new Raphael(checkmarkSVG).transform("s0.9,0.9,0,0");
+		this.invisible_checkmark = $($('#invisible_chkbox').children()[0]);
+		this.invisible_checkmark.css({
+			top:'-14px', left:'-4px', 'display':'none'}
+			);
+		var checkmarkSVG=["pause_chkbox",30,30,{"fill":"#FF2D00","type":"path","stroke":"none","path":"M1.125,18.75l7.25-4.625l3.875,7.25c0,0,2.358-5.429,6-10 C24.125,4,28.875,1.75,28.875,1.75v10.875c0,0-5.848,3.854-7.25,5.25C19.173,20.317,12.75,28.5,12.75,28.5S3.75,19.833,1.125,18.75z "}];
+		var checkmark = new Raphael(checkmarkSVG).transform("s0.9,0.9,0,0");
+		this.pause_checkmark = $($('#pause_chkbox').children()[0]);
+		this.pause_checkmark.css({
+			top:'-14px', left:'-4px', 'display':'none'}
+			);
 
+		$('#hover').click(function(){
+			if(self.model.get('hover')){
+				self.model.set({hover:false});
+			}else{
+				self.model.set({hover:true});
+			}
+		});
+
+		$('#invisible_chkbox').click(function(){
+			if(self.model.get('invisible')){
+				self.model.set({invisible:false});
+			}else{
+				self.model.set({invisible:true});
+			}
+		});
+
+		$('#pause_chkbox').click(function(){
+			if(self.model.hoverObj.pause){
+				self.model.hoverObj.pause = false;
+				self.model.set({'pause':false});
+			}else{
+				self.model.hoverObj.pause = true;
+				self.model.set({'pause':true});
+			}
+		});
+
+		if(this.model.hoverObj && this.model.hoverObj.static){
+			this.model.hoverObj.pause = true;
+			this.toggle_pause();
+		}
 		this.toggle_hover();
+		
 		if(this.model.get('afx')){
 			this.$('.starttime').attr({'readonly': true});
 			this.$('.endtime').attr({'readonly': true});
@@ -518,6 +560,10 @@ var AddEventForm = Backbone.View.extend({
 					if(self.model.get('hover') && self.model.get('customHover')){
 						$(self.raphael.node).css('cursor', 'pointer');
 
+						if(self.model.hoverObj.pause){
+							if(!App.player.paused){App.popcorn.pause();}
+						}
+
 						if(!self.model.hoverObj.static){
 							var xOffset = evt.offsetX - self.model.hoverObj.anchor.x * App.player.width/self.model.get('raphaelWidth');
 							var yOffset = evt.offsetY - self.model.hoverObj.anchor.y * App.player.height/self.model.get('raphaelHeight');
@@ -529,8 +575,8 @@ var AddEventForm = Backbone.View.extend({
 									$($('tspan', e.node)[0]).attr('dy', 0);
 								}
 							});
-						}else if(self.model.hoverObj.static){
-							if(!App.player.paused){App.popcorn.pause();}
+						}else if(self.model.hoverObj.static ){
+							if(!App.player.paused && self.model.hoverObj.pause){App.popcorn.pause();}
 							// reset all elements to original parameters
 							self.mouseover.forEach(function(e){
 								e.attr(e.initAttrs);
@@ -586,7 +632,7 @@ var AddEventForm = Backbone.View.extend({
 					evt.preventDefault(); evt.stopPropagation();
 					// self.mouseover.animating = false;
 					if(self.model.get('hover') && self.model.get('customHover')){
-						if(self.model.hoverObj.static){
+						if(self.model.hoverObj.static || self.model.hoverObj.pause){
 							if(!App.player.paused){App.popcorn.play();}	
 						}
 
@@ -768,7 +814,7 @@ var AddEventForm = Backbone.View.extend({
 	toggle_hover: function(){
 		App.saved = false;
 		if(this.model.get('hover')){
-			this.checkmark.fadeIn(100);
+			this.hover_checkmark.fadeIn(100);
 			if(!this.model.customHover){
 				$('.hover_text').css('color', '#000').attr({readonly:false});
 				$('.hover_css').css('color', '#000').attr({readonly:false});
@@ -779,13 +825,29 @@ var AddEventForm = Backbone.View.extend({
 				this.renderMouseover();
 			}
 		}else{
-			this.checkmark.fadeOut(100);
+			this.hover_checkmark.fadeOut(100);
 			if(!this.model.customHover){
 				$('.hover_text').css('color', 'rgb(180, 180, 180)').attr({readonly:true});
 				$('.hover_css').css('color', 'rgb(180, 180, 180)').attr({readonly:true});
 			}else if(this.model.hoverObj.text){
 				$('.hover_text').css('color', 'rgb(180, 180, 180)').attr({readonly:true});
 			}
+		}
+	},
+	toggle_invisible: function(){
+		App.saved = false;
+		if(this.model.get('invisible')){
+			this.invisible_checkmark.fadeIn(100);
+		}else{
+			this.invisible_checkmark.fadeOut(100);
+		}
+	},
+	toggle_pause: function(){
+		App.saved = false;
+		if(this.model.hoverObj.pause){
+			this.pause_checkmark.fadeIn(100);
+		}else{
+			this.pause_checkmark.fadeOut(100);
 		}
 	},
 	keyupHoverText: function(evt){
