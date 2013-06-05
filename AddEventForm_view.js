@@ -220,13 +220,21 @@ var AddEventForm = Backbone.View.extend({
 		  	self.toggle_invisible();
 		  }
 		  if (self.model.hasChanged('pause')) {
+		  	self.model.hoverObj.pause = self.model.get('pause');
 		  	self.toggle_pause();
 		  }
 		  if (self.model.hasChanged('hoverText')) {
+		  	if(!self.mouseoverText){
+		  		self.renderMouseover();
+		  	}
 		  	$('.hover_text').val(self.model.get('hoverText'));
 		  	self.mouseoverText.attr({'text': self.model.get('hoverText')});
-		  	self.mouseoverText.initAttrs.text = self.model.get('hoverText');
-		  	self.mouseoverText.fullAttr.text = self.model.get('hoverText');
+		  	if(self.mouseoverText.initAttrs){
+		  		self.mouseoverText.initAttrs.text = self.model.get('hoverText');
+		  	}
+		  	if(self.mouseoverText.fullAttrs){
+		  		self.mouseoverText.fullAttr.text = self.model.get('hoverText');
+		  	}
 		  }
 		  if (self.model.hasChanged('hoverCss')) {
 		  	$('.hover_css').html(self.model.get('hoverCss'));
@@ -305,6 +313,7 @@ var AddEventForm = Backbone.View.extend({
 			this.toggle_pause();
 		}
 		this.toggle_hover();
+		this.toggle_invisible();
 		
 		if(this.model.get('afx')){
 			this.$('.starttime').attr({'readonly': true});
@@ -367,7 +376,9 @@ var AddEventForm = Backbone.View.extend({
 									customHover: data.customHover,
 									hoverText: data.hoverObj ? (data.hoverObj.text ? data.hoverObj.text.text.replace(/%n%/g, '\n') : 'hover text') : 'hover text',
 									hoverCss: data.hoverObj ? '[imported from after effects]' : self.model.defaultCss,
-									attr: data.attr
+									attr: data.attr,
+									invisible: data.invisible,
+									pause: data.hoverObj.static
 								});
 					
 			 		//jump player to inPoint position
@@ -398,7 +409,7 @@ var AddEventForm = Backbone.View.extend({
 				this.mouseover = App.paper.set();
 				for (var e=hoverObj.el.length-1; e>=0; e--){
 					var el = hoverObj.el[e]; // info for this el
-					// pull out hte initial keyframes for each attribute
+					// pull out the initial keyframes for each attribute
 					var attr = {};
 					var varyingAttrs = []; // will contain an array of all varying attributes
 					for (key in el){
@@ -495,6 +506,7 @@ var AddEventForm = Backbone.View.extend({
 			}
 
 			this.toggle_hover();
+			this.toggle_pause();
 			
 		}
 	},
@@ -518,6 +530,7 @@ var AddEventForm = Backbone.View.extend({
 
 	renderElement: function(){
 		var self = this;
+		this.toggle_invisible;
 		// clear elements
 		if(this.dummy){this.dummy.remove();}
 		if(this.raphael){this.raphael.node.remove();}
