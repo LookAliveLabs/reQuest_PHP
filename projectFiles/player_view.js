@@ -158,6 +158,7 @@ var Player = Backbone.View.extend({
 		var self = this;
 
 	    App.LooksAlive = 0; // alert indicator
+	    App.cart = new Cart();
 	    App.paper = new Raphael('afxEl', $('#player').width(), this.youtube ? $('#player').height()-35 : $('#player').height()); // Paper for raphael elements
 	    App.paper.canvas.className.baseVal="raphaelPaper"; // give this el a class
 
@@ -228,6 +229,12 @@ var Player = Backbone.View.extend({
 
 	    App.popcorn.on('ended', function(){
 	    	self.video.ended = true;
+	    	window.clearInterval(self.updateBar);
+	    	// display cart if not empty
+	    	if(App.cart.get('Items').length>0){
+	    		//show cart;
+	    		App.cart.getContents();
+	    	}
 	    });
 	    
 
@@ -803,13 +810,7 @@ var ElementView = Backbone.View.extend({
 					_gaq.push(['_trackEvent', App.clientName+'_'+App.projectName, 'Clicked', 'Clicked on '+self.model.get('name')]);
 
 					// onClick event if LINK???
-					if(self.model.get('link')){
-						App.popcorn.pause();
-						var a = document.createElement('a');
-						$(a).attr({href: self.model.get('link'), target:'_blank'});
-						window.open($(a).attr('href'));
-						$(a).remove();
-					}
+					self.clickAction();
 				}).mouseenter(function(evt){
 					// Google Analytics
 					if(!App.analytics.engaged){
@@ -921,13 +922,7 @@ var ElementView = Backbone.View.extend({
 				_gaq.push(['_trackEvent', App.clientName+'_'+App.projectName, 'Clicked', 'Clicked on '+ +self.model.get('name')]);
 
 				// // onClick event if LINK??? ***
-				if(self.model.get('link')){
-					App.popcorn.pause();
-					var a = document.createElement('a');
-					$(a).attr({href: self.model.get('link'), target:'_blank'});
-					window.open($(a).attr('href'));
-					$(a).remove();
-				}
+				self.clickAction();
 			}).mouseenter(function(evt){
 				// Google Analytics
 				if(!App.analytics.engaged){
@@ -951,6 +946,17 @@ var ElementView = Backbone.View.extend({
 			}).mouseleave(function(evt){
 				$(self.mouseover).stop().fadeOut(300);
 			});
+		}
+	},
+	clickAction: function(){
+		if(this.model.get('asin')){
+			App.cart.addItem({ASIN: this.model.get('asin'), Quantity: 1});
+		}else if(this.model.get('link')){
+			App.popcorn.pause();
+			var a = document.createElement('a');
+			$(a).attr({href: this.model.get('link'), target:'_blank'});
+			window.open($(a).attr('href'));
+			$(a).remove();
 		}
 	},
     animate: function(){

@@ -78,6 +78,7 @@
 							hoverCss: element.hoverCss,
 							hoverText: element.hoverText,
 							link: element.link,
+							asin: element.asin,
 							hover: element.hover,
 							id: i+1,
 							afx: element.afx,

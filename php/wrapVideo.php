@@ -15,6 +15,8 @@
 	file_put_contents($file_path, json_encode($data));
 	// (2) copy index template into dirName directory
 	copy('../projectFiles/index.html', '../Projects/'.$data['dirName'].'/index.html');
+	// (2) copy embed template into dirName directory
+	copy('../projectFiles/embed.html', '../Projects/'.$data['dirName'].'/embed.html');
 
 	$out = array();
 	$out['dirName'] = $data['dirName'];

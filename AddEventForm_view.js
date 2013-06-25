@@ -312,6 +312,7 @@ var AddEventForm = Backbone.View.extend({
 			this.model.hoverObj.pause = true;
 			this.toggle_pause();
 		}
+
 		this.toggle_hover();
 		this.toggle_invisible();
 		
@@ -506,7 +507,13 @@ var AddEventForm = Backbone.View.extend({
 			}
 
 			this.toggle_hover();
+			if(this.model.hoverObj.static){
+				this.model.hoverObj.pause = true;
+			}else{
+				this.model.hoverObj.pause = false;
+			}
 			this.toggle_pause();
+			
 			
 		}
 	},
@@ -985,9 +992,22 @@ var AddEventForm = Backbone.View.extend({
 	onTextBlur: function(e){
 		App.saved = false;
 		App.onTextInput = false;
+		var self = this;
 		if(e.target.className=='link'){
 			if (this.$('input.link').val()=='http://'){
 				this.$('input.link').val('');
+			}
+		}else if(e.target.className=='asin'){
+			if (this.$('input.asin').val()!=''){
+				var data = {params:{Operation:"ItemLookup", ItemId:this.$('input.asin').val(), IdType:"ASIN", Condition:"All"}};
+				$.ajax({type:'POST', dataType:'json', 
+					data: data, url:'php/amazonRequest.php', 
+					success:function(res){
+						self.model.set({'asin': $('.asin').val()});
+					}, 
+					error:function(err){
+						alert(err.responseText);
+					} });
 			}
 		}
 	},

@@ -10,11 +10,12 @@
 	<input type="text" class="elname" value={name}><br/>
 	<input type="text" class="starttime" value={start}><br/>
 	<input type="text" class="endtime" value={end}><br/>
-	<div id="invisible" class="checkbox"></div>
+	<div id="invisible_chkbox" class="checkbox"></div>
 </div>
 <div class="col3">
-	link: <input type="text" class="link" value={link}><br/><br/>
-	<div class="left">hover?</div><div id="hover" class="left"></div><div class="left">pause?</div><div id="pause" class="left checkbox"></div></br>
+	link: <input type="text" class="link" value={link}><br/>
+	amazon ASIN: <input type="text" class="asin" value={asin}><br/>
+	<div class="left">hover?</div><div id="hover" class="left"></div><div class="left">pause?</div><div id="pause_chkbox" class="left checkbox"></div></br>
 	<input type="text" class="hover_text" value="{hoverText}" readonly><br/>
 	<textarea type="text" class="hover_css" rows="5" readonly>{hoverCss}</textarea>
 </div>
