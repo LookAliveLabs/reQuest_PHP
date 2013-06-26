@@ -44,7 +44,7 @@ var Cart = Backbone.Model.extend({
 
 		$.ajax({type:'POST', dataType:'json', 
 			data: {params: params},
-			url:'/~mashabelyi/LookAlive/php/amazonRequest.php', 
+			url: CONF['api_host']+'/php/amazonRequest.php', 
 			success:function(res){
 				self.set({'Items': res.Items, 'CartId': res.CartId, 'HMAC':res.HMAC, 'Subtotal': res.Subtotal, 'PurchaseUrl': res.PurchaseUrl});
 				
