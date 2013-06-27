@@ -158,7 +158,7 @@ var Player = Backbone.View.extend({
 		var self = this;
 
 	    App.LooksAlive = 0; // alert indicator
-	    App.cart = new Cart();
+	    App.cart = new Cart([]);
 	    App.paper = new Raphael('afxEl', $('#player').width(), this.youtube ? $('#player').height()-35 : $('#player').height()); // Paper for raphael elements
 	    App.paper.canvas.className.baseVal="raphaelPaper"; // give this el a class
 
@@ -231,9 +231,9 @@ var Player = Backbone.View.extend({
 	    	self.video.ended = true;
 	    	window.clearInterval(self.updateBar);
 	    	// display cart if not empty
-	    	if(App.cart.get('Items').length>0){
+	    	if(App.cart.models.length>0){
 	    		//show cart;
-	    		App.cart.getContents();
+	    		App.cart.showCheckout();
 	    	}
 	    });
 	    
@@ -301,6 +301,14 @@ var Player = Backbone.View.extend({
 					App.LooksAlive+=1; 
 				}
 			});
+			if(t< App.popcorn.duration()-0.1){
+				$('#amazon-cart-contents').fadeOut();
+			}else{
+				if(App.cart.models.length>0){
+		    		//show cart;
+		    		App.cart.showCheckout();
+		    	}
+			}
 			// // Display alert svg only when interactive elements are on the screen ** for now - display all the time
 			// if(App.LooksAlive){
 			// 	// $('#alert').fadeIn();
@@ -950,7 +958,13 @@ var ElementView = Backbone.View.extend({
 	},
 	clickAction: function(){
 		if(this.model.get('asin')){
-			App.cart.addItem({ASIN: this.model.get('asin'), Quantity: 1});
+			if(!this.model.addedToCart){
+				App.cart.addItem({ASIN: this.model.get('asin'), Quantity: 1});
+				this.model.addedToCart = true;
+			}else{
+				// dont add more than once
+				// alert('this item is already in your cart!');
+			}
 		}else if(this.model.get('link')){
 			App.popcorn.pause();
 			var a = document.createElement('a');

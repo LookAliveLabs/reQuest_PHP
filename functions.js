@@ -5,6 +5,28 @@
 	  return array.indexOf(element);
 	}
 
+	function RaphaelToScale(svg, position){
+		var el = document.getElementById(svg[0]);
+		el.innerHTML = ''; //clear element
+		var width = $(el).css('width');
+		var height = $(el).css('height');
+		var scaleX = parseFloat($(el).css('width'))/svg[1];
+		var scaleY = parseFloat($(el).css('height'))/svg[2];
+		var newHeight = svg[2]*scaleX;
+		var paper = Raphael(svg[0], width, newHeight);
+		// paper.canvas.className.baseVal="raphaelPaper"; // give this svg an id
+		
+		var paths = svg.slice(3, svg.length);
+		paper.add(paths).transform("S"+scaleX+","+scaleX+",0,0");
+		if(position){
+			el.style.top = ($(el.parentNode).height() - newHeight)/2;
+			el.style.height = newHeight+'px';
+		}
+
+		var out = {paper:paper, scale:scaleX};
+		return out;
+	}
+	
 	function intrapolate(t, keyframes){
 		if(keyframes.time.indexOf(t) == -1){
 			// find the closest keyframes

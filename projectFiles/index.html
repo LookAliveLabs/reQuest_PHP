@@ -3,6 +3,8 @@
 		<title>reQuest video</title>
 
 		<link rel="stylesheet" href="../../../projectFiles/styles.css" type="text/css" />
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:700italic,300,700' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
 
 		<script type="text/javascript">
 		  var _gaq = _gaq || [];
@@ -34,7 +36,7 @@
 		<script type="text/javascript" src="../../../projectFiles/raphaelElements.js"></script>
 		<script type="text/javascript" src="../../../projectFiles/amazon_cart.js"></script>
 		<script type="text/javascript" src="../../../config.js"></script>
-
+		<script type="text/javascript" src="../../../functions.js"></script>
 
 	</head>
 	<body>
@@ -44,15 +46,17 @@
 		<div id="iframeText"></div>
 
 		<div id="amazon-cart-contents">
-			<div class='cart-header'>Items you reQuested</div>
-			<div class='cart-row title'>
-				<div class='col c1'>Shopping Cart</div>
+			<div style="width:960px; height:100%; position:relative; margin:auto;">
+			<div class='cart-header'><div id="ch1">items you </div><div id="requested"></div><div class="clear"></div></div>
+			<div class='header-row'>
+				<div class='col c1 title'>Shopping Cart<div id="cartImg-checkout"></div><div class="cart-numItems">1</div></div>
 				<div class='col c2'>Price</div>
 				<div class='col c3'>Quanity</div>
 			</div>
 			<div class='cart-contents'>
 			</div>
-			<div class='cart-checkout-btn'>Checkout through amazon</div>
+			<div class='cart-checkout-btn'>proceed to checkout</div>
+			</div>
 		</div>
 
 		<script>

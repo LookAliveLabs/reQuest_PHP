@@ -40,13 +40,40 @@
         	die($error);		
     		
     	}
+  //   }else{
+  //   	$result = array(
+		// 	'CartId' => (string)$xml->Cart->CartId,
+		// 	'HMAC' => (string)$xml->Cart->HMAC,
+		// 	'Subtotal' => (string)$xml->Cart->SubTotal->FormattedPrice,
+		// 	'Item' => array(
+		// 		'quantity' => $params['Item.1.Quantity'],
+		// 		'ASIN' => $params['Item.1.ASIN']
+		// 		),
+		// 	'PurchaseUrl' => (string)$xml->Cart->PurchaseURL
+		// 	);
+  //   	$lookup = array(
+		// 			'Service' => 'AWSECommerceService',
+		// 			'AWSAccessKeyId' => AWS_ACCESS_KEY_ID,
+		// 			'AssociateTag' => AWS_ASSOC_TAG,
+		// 			'Operation'=> 'ItemLookup',
+		// 			'ItemId'=>$params['Item.1.ASIN'],
+		// 			'IdType'=>'ASIN',
+		// 			'Condition'=> 'All',
+		// 			'ResponseGroup'=>'Images,ItemAttributes'
+		// 	);
+		// $signed_url = signAmazonUrl($url, $lookup, AWS_SECRET_ACCESS_KEY);
+		// $res = file_get_contents($signed_url);
+		// $item_xml = simplexml_load_string($res);
+		// $out['img'] = (string)$item_xml->Items->Item->MediumImage->URL;
+  //   }
     }else{
     	// echo 'no';
 		$result = array(
 			'CartId' => (string)$xml->Cart->CartId,
 			'HMAC' => (string)$xml->Cart->HMAC,
 			'Subtotal' => (string)$xml->Cart->SubTotal->FormattedPrice,
-			'Items' => array(),
+			'Item' =>array(),
+			'Cart' => array(),
 			'PurchaseUrl' => (string)$xml->Cart->PurchaseURL
 			);
 
@@ -55,9 +82,10 @@
 					'ASIN'=> (string)$item->ASIN,
 					'quantity'=> (string)$item->Quantity,
 					'title'=> (string)$item->Title,
-					'price'=> (string)$item->Price->FormattedPrice
+					'price'=> (string)$item->Price->FormattedPrice,
+					'CartItemId'=> (string)$item->CartItemId
 				);
-			if($data['Operation'] == 'CartGet'){
+			// if($data['Operation'] == 'CartGet'){
 				// lookup images of each item
 				$lookup = array(
 						'Service' => 'AWSECommerceService',
@@ -74,8 +102,11 @@
     			$item_xml = simplexml_load_string($res);
     			$out['img'] = (string)$item_xml->Items->Item->MediumImage->URL;
 
+			// }
+			$result['Cart'][] = $out;
+			if((string)$item->ASIN == $params['Item.1.ASIN']){
+				$result['Item'] = $out;
 			}
-			$result['Items'][] = $out;
 		}
 	}
 

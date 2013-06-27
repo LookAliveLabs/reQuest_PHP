@@ -4,8 +4,7 @@
 */
 var Event = Backbone.Model.extend({
 	initialize: function(attr, options) {
-		_.bindAll(this, 'destroy');
-		
+
 		// add this model to events collection
 		this.collection.push(this);
 
