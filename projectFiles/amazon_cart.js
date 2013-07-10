@@ -31,6 +31,8 @@ var Item = Backbone.Model.extend({
 		});
 	},
 	destroy: function(){
+		// allow to be added to cart again
+		this.get('parentModel').addedToCart = false;
 		this.collection.remove(this);
 		this.view.destroy();
 	}
@@ -89,6 +91,7 @@ var Cart = Backbone.Collection.extend({
 	},
 	addItem: function(item){
 		var self = this;
+		var parentModel = item.parentModel;
 		var params = {
 			'Item.1.ASIN': item.ASIN,
 			'Item.1.Quantity': item.Quantity
@@ -110,8 +113,11 @@ var Cart = Backbone.Collection.extend({
 				self.HMAC = res.HMAC;
 				self.Subtotal = res.Subtotal;
 				self.PurchaseUrl = res.PurchaseUrl;
-				self.add(res.Item);
 
+				res.Item.parentModel = parentModel;
+
+				self.add(res.Item);
+				//update item count
 				self.countItems(res);
 
 				// show cart icon

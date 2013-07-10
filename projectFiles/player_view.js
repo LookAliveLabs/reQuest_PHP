@@ -963,7 +963,7 @@ var ElementView = Backbone.View.extend({
 	clickAction: function(){
 		if(this.model.get('asin')){
 			if(!this.model.addedToCart){
-				App.cart.addItem({ASIN: this.model.get('asin'), Quantity: 1});
+				App.cart.addItem({ASIN: this.model.get('asin'), Quantity: 1, parentModel: this.model});
 				this.model.addedToCart = true;
 			}else{
 				// dont add more than once
