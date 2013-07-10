@@ -497,6 +497,11 @@ body, html{
     font-weight: 700;
     color: #004B91;
     font-size: 15px;
+    cursor:pointer;
+    overflow:none;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    text-decoration:none;
 }
 .item-availability{
     font-size:14px;

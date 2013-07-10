@@ -199,7 +199,7 @@ var ItemView = Backbone.View.extend({
 	render: function(){
 		var out = "<div class='col c1'><img src='"+this.model.get('img')+"' class='cart-img'/></div>"+
 					"<div class='col c2'>"+
-						"<div class='item-name'>"+this.model.get('title')+"</div>"+
+						"<a href='http://www.amazon.com/dp/"+this.model.get('ASIN')+"/?tag=lookalivelabs-20' target='_blank' class='item-name'>"+this.model.get('title')+"</a>"+
 						"<div class='item-availability'>in Stock</div>"+
 						"<div class='item-shipment amazon-gray'>Shipped from: <span class='amazon-blue'>"+this.model.get('seller')+"</span></div>"+
 						"<div class='item-giftoptions amazon-gray'>Gift options available</div>"+
