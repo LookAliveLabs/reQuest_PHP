@@ -101,7 +101,16 @@
 				$signed_url = signAmazonUrl($url, $lookup, AWS_SECRET_ACCESS_KEY);
 				$res = file_get_contents($signed_url);
     			$item_xml = simplexml_load_string($res);
-    			$out['img'] = (string)$item_xml->Items->Item->MediumImage->URL;
+
+    			
+    			$url = (string)$item_xml->Items->Item->MediumImage->URL;
+    			$url = explode("_", $url);
+    			if(count($url)>1){
+    				$out['img']  = $url[0]."_SL500_SS100_.jpg";
+    			}else{
+    				$out['img'] = $url;
+    			}
+
 
 			// }
 			$result['Cart'][] = $out;

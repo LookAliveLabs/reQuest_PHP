@@ -371,7 +371,7 @@ body, html{
     border: 1px solid black;
     cursor: pointer;
     position: absolute;
-    bottom:10%;
+    bottom:8%;
     left:355px;
     cursor:pointer;
 
@@ -526,3 +526,6 @@ body, html{
 }
 .amazon-blue{color: #004B91;}
 .amazon-gray{color:#666666;}
+.amazon-red{color:#990000;}
+.black{color:#000;}
+.bold{font-weight:700;}

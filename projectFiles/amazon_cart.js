@@ -85,6 +85,7 @@ var Cart = Backbone.Collection.extend({
 		this.numItems = total;
 		$('.cart-numItems').html(total);
 		$('.cart-itemCounter').html(total);
+		$('#cart-subtotal').html(res.Subtotal);
 	},
 	addItem: function(item){
 		var self = this;
