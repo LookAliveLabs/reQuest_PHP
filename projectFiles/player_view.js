@@ -29,6 +29,7 @@ var Player = Backbone.View.extend({
 		App.playerheight = $('#player').height();
 		App.analytics = {};
 		App.fonts = {};
+		App.onTextInput = false;
 			
 		// render on init
 		// this.render(options.src_mp4, options.events);
@@ -320,7 +321,9 @@ var Player = Backbone.View.extend({
 		});
 
 		$(document).keyup(function(e){
-			e.preventDefault(); e.stopPropagation();
+			if(!App.onTextInput){
+				e.preventDefault(); e.stopPropagation();
+			}
 			switch (e.which){
 				case 37: // left arrow key
 					clearInterval(App.leftKeyHold);
@@ -351,6 +354,7 @@ var Player = Backbone.View.extend({
 					});
 					break;
 				case 32: // space bar
+					e.preventDefault(); e.stopPropagation();
 					self.playOrPause(e);
 					break;
 			}

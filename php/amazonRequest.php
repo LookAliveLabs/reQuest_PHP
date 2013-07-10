@@ -83,7 +83,8 @@
 					'quantity'=> (string)$item->Quantity,
 					'title'=> (string)$item->Title,
 					'price'=> (string)$item->Price->FormattedPrice,
-					'CartItemId'=> (string)$item->CartItemId
+					'CartItemId'=> (string)$item->CartItemId,
+					'seller'=>(string)$item->SellerNickname
 				);
 			// if($data['Operation'] == 'CartGet'){
 				// lookup images of each item
@@ -104,7 +105,7 @@
 
 			// }
 			$result['Cart'][] = $out;
-			if((string)$item->ASIN == $params['Item.1.ASIN']){
+			if($params['Item.1.ASIN'] && (string)$item->ASIN == $params['Item.1.ASIN']){
 				$result['Item'] = $out;
 			}
 		}
