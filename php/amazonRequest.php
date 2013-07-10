@@ -114,7 +114,7 @@
 
 			// }
 			$result['Cart'][] = $out;
-			if($params['Item.1.ASIN'] && (string)$item->ASIN == $params['Item.1.ASIN']){
+			if(array_key_exists('Item.1.ASIN', $params) && (string)$item->ASIN == $params['Item.1.ASIN']){
 				$result['Item'] = $out;
 			}
 		}

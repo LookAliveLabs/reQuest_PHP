@@ -182,6 +182,7 @@ var ItemView = Backbone.View.extend({
 	tagName: "div",
 	className: "cart-row",
 	events: {
+		"keydown .item-quantity": "validateKey",
 		"blur .item-quantity": "changeQuantity",
 		"focus .item-quantity": "focusQuantity",
 		"click .item-delete": "deleteItem"
@@ -220,10 +221,18 @@ var ItemView = Backbone.View.extend({
 	focusQuantity: function(){
 		App.onTextInput = true;
 	},
+	validateKey: function(e){
+		var char = e.which;
+		var allowed = (char>=48 && char<=57) || char==8; // allowed only numbers or backspace
+		if(!allowed){
+			e.preventDefault(); e.stopPropagation();
+		}
+	},
 	changeQuantity: function(e){
 		App.onTextInput = false;
 		var value = $(e.currentTarget).val();
 		this.model.changeQuantity({CartItemId: this.model.get('CartItemId'), Quantity: value});
+
 	},
 	destroy: function(){
 		$(this.el).remove();
