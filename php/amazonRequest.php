@@ -67,7 +67,7 @@
 		// $out['img'] = (string)$item_xml->Items->Item->MediumImage->URL;
   //   }
     }else{
-    	// echo 'no';
+    	// cart operation
 		$result = array(
 			'CartId' => (string)$xml->Cart->CartId,
 			'HMAC' => (string)$xml->Cart->HMAC,
@@ -76,47 +76,50 @@
 			'Cart' => array(),
 			'PurchaseUrl' => (string)$xml->Cart->PurchaseURL
 			);
-
-		foreach($xml->Cart->CartItems->CartItem as $item){
-			$out = array(
-					'ASIN'=> (string)$item->ASIN,
-					'quantity'=> (string)$item->Quantity,
-					'title'=> (string)$item->Title,
-					'price'=> (string)$item->Price->FormattedPrice,
-					'CartItemId'=> (string)$item->CartItemId,
-					'seller'=>(string)$item->SellerNickname
-				);
-			// if($data['Operation'] == 'CartGet'){
-				// lookup images of each item
-				$lookup = array(
-						'Service' => 'AWSECommerceService',
-       					'AWSAccessKeyId' => AWS_ACCESS_KEY_ID,
-        				'AssociateTag' => AWS_ASSOC_TAG,
-        				'Operation'=> 'ItemLookup',
-        				'ItemId'=>(string)$item->ASIN,
-        				'IdType'=>'ASIN',
-        				'Condition'=> 'All',
-        				'ResponseGroup'=>'Images'
+		if(array_key_exists('CartItems', $xml->Cart)){ // if cart is not empty
+			foreach($xml->Cart->CartItems->CartItem as $item){
+				$out = array(
+						'ASIN'=> (string)$item->ASIN,
+						'quantity'=> (string)$item->Quantity,
+						'title'=> (string)$item->Title,
+						'price'=> (string)$item->Price->FormattedPrice,
+						'CartItemId'=> (string)$item->CartItemId,
+						'seller'=>(string)$item->SellerNickname
 					);
-				$signed_url = signAmazonUrl($url, $lookup, AWS_SECRET_ACCESS_KEY);
-				$res = file_get_contents($signed_url);
-    			$item_xml = simplexml_load_string($res);
+				// if($data['Operation'] == 'CartGet'){
+					// lookup images of each item
+					$lookup = array(
+							'Service' => 'AWSECommerceService',
+	       					'AWSAccessKeyId' => AWS_ACCESS_KEY_ID,
+	        				'AssociateTag' => AWS_ASSOC_TAG,
+	        				'Operation'=> 'ItemLookup',
+	        				'ItemId'=>(string)$item->ASIN,
+	        				'IdType'=>'ASIN',
+	        				'Condition'=> 'All',
+	        				'ResponseGroup'=>'Images'
+						);
+					$signed_url = signAmazonUrl($url, $lookup, AWS_SECRET_ACCESS_KEY);
+					$res = file_get_contents($signed_url);
+	    			$item_xml = simplexml_load_string($res);
 
-    			
-    			$url = (string)$item_xml->Items->Item->MediumImage->URL;
-    			$url = explode("_", $url);
-    			if(count($url)>1){
-    				$out['img']  = $url[0]."_SL500_SS100_.jpg";
-    			}else{
-    				$out['img'] = $url;
-    			}
+	    			
+	    			$url = (string)$item_xml->Items->Item->MediumImage->URL;
+	    			$url = explode("_", $url);
+	    			if(count($url)>1){
+	    				$out['img']  = $url[0]."_SL500_SS100_.jpg";
+	    			}else{
+	    				$out['img'] = $url;
+	    			}
 
 
-			// }
-			$result['Cart'][] = $out;
-			if(array_key_exists('Item.1.ASIN', $params) && (string)$item->ASIN == $params['Item.1.ASIN']){
-				$result['Item'] = $out;
+				// }
+				$result['Cart'][] = $out;
+				if(array_key_exists('Item.1.ASIN', $params) && (string)$item->ASIN == $params['Item.1.ASIN']){
+					$result['Item'] = $out;
+				}
 			}
+		}else{
+			$result['Subtotal'] = '$0.00';
 		}
 	}
 
